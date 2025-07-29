@@ -1,10 +1,32 @@
-# An overview of Scraped COLAs
+# Public COLA Registry Analysis
 
 ```js
-const colas = FileAttachment("./data/scraped_colas.json").json();
+const colaData = FileAttachment("./data/scraped_colas.parquet").parquet();
+const colas_file = FileAttachment("./data/scraped_colas.parquet");
 ```
 
 ```js
+// Convert parquet data to array format if needed
+const colas = Array.isArray(colaData) ? colaData : Array.from(colaData);
+
+// Get file metadata for display
+const fileSize = (colas_file.size / 1024).toFixed(1); // Convert to KB
+const lastModified = new Date(colas_file.lastModified);
+const href = colas_file.href;
+const downloadName = "scraped_colas_" + lastModified.toISOString().replace(/[:.]/g, "-") + ".parquet";
+// display(colas.slice(0, 5)); // Show first 5 records for debugging
+```
+
+<div style="margin-bottom: 1rem;">
+  <small style="color: #666; font-size: 0.75em;">
+    Data as of ${lastModified.toLocaleString()}| <a href="./data/scraped_colas.parquet" download="scraped_colas.parquet" style="color: #0066cc;">Download raw data</a>
+  </small>
+</div>
+
+```js
+display(colas_file)
+display(href)
+display(colas_file.href)
 // Group data by weekly date and commodity type
 const colasByWeekAndCommodity = d3.rollup(
   colas,
@@ -20,8 +42,21 @@ const colasByWeekAndCommodity = d3.rollup(
   d => d.ct_commodity || "Unknown"
 );
 
-// Get all unique commodity types and sort them for consistent ordering
-const allCommodityTypes = [...new Set(colas.map(d => d.ct_commodity || "Unknown"))].sort();
+// Get all unique commodity types and sort them by frequency (most frequent first)
+const commodityFrequency = d3.rollup(
+  colas.filter(d => d.ct_commodity), // Filter out null/undefined commodities
+  v => v.length,
+  d => d.ct_commodity
+);
+
+const allCommodityTypes = [...commodityFrequency.entries()]
+  .sort((a, b) => b[1] - a[1]) // Sort by count descending (most frequent first)
+  .map(d => d[0]); // Extract just the commodity names
+
+// Add "Unknown" at the end if it exists in the data
+if (colas.some(d => !d.ct_commodity)) {
+  allCommodityTypes.push("Unknown");
+}
 
 // Convert to array format for plotting, ensuring all weeks have all commodity types
 const chartData = [];
@@ -54,7 +89,7 @@ chartData.sort((a, b) => {
 // Create a chart with the actual data if we have any
 if (chartData.length > 0) {
   display(Plot.plot({
-    title: "COLA Applications by Week and Commodity Type",
+    title: "Scraped COLA Applications by Completed Week and Commodity Type",
     x: {
       label: "Week",
       type: "time"
@@ -66,14 +101,14 @@ if (chartData.length > 0) {
     color: {
       legend: true,
       scheme: "category10",
-      domain: allCommodityTypes // Ensure consistent color mapping
+      domain: allCommodityTypes // Most frequent at top of legend
     },
     marks: [
       Plot.areaY(chartData, {
         x: "date",
         y: "count",
         fill: "ct_commodity",
-        order: "ct_commodity", // Ensure consistent stacking order
+        order: allCommodityTypes, // Most frequent at top of stack
         curve: "step",
         tip: true
       })

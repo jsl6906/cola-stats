@@ -17,13 +17,13 @@ export default {
   // ],
 
   // Content to add to the head of the page, e.g. for a favicon:
-  head: '<link rel="icon" href="favicon1.png" type="image/png" sizes="32x32">',
+  head: '<link rel="icon" href="./resources/favicon2_transparent.png" type="image/png" sizes="32x32">',
 
   // The path to the source root.
   root: "src",
 
   interpreters: {
-    ".py": ["python"],
+    ".py": ["uv run"],
     ".sas7bdat": ["sas"]
   },
 
