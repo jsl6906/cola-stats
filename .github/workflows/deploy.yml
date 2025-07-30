@@ -22,17 +22,28 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v1 # Use the latest version
-      - run: uv sync
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.3"
+
+      - name: Set up python
+        run: uv python install
+
+      - name: Sync uv to get python dependencies
+        run: uv sync
 
       - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "22"
           cache: npm
-      - run: npm ci
-      - run: npm run build
 
+      - name: Install node dependencies
+        run: npm ci
+
+
+      - name: Execute the data loaders and build the static Observable Framework site
+        run: npm run build
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
