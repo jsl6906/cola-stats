@@ -55,7 +55,7 @@ jobs:
           node --version
           npm --version
 
-      - run: .\.venv\Scripts\Activate.ps1
+      - run: .venv\Scripts\Activate.ps1
 
       - name: Execute the data loaders and build the static Observable Framework site
         run: npm run build
