@@ -28,6 +28,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          activate-environment: true
       - run: uv --version
 
       - name: "Set up Python"
@@ -49,8 +50,12 @@ jobs:
       - name: Install node dependencies
         run: npm ci
 
+      - run: echo $PATH
+
       - name: Execute the data loaders and build the static Observable Framework site
         run: npm run build
+        env:
+          PATH: ${{ env.PATH }}:/path/to/uv/bin # Adjust /path/to/uv/bin as needed
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
