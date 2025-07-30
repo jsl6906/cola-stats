@@ -1,0 +1,48 @@
+stages:
+  - build
+  - publish
+
+variables:
+  UV_VERSION: "0.5"
+  PYTHON_VERSION: "3.13"
+  BASE_LAYER: "bookworm-slim"
+  NODE_VERSION: "22"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  NPM_CACHE_DIR: "$CI_PROJECT_DIR/.npm"
+
+cache:
+  paths:
+    - .cache/pip
+    - .npm
+    - .uv-cache
+
+before_script:
+  - apt-get update && apt-get install -y python3-pip python3-venv
+  - pip3 install --upgrade pip
+  - pip3 install uv
+  - python3 --version
+  - uv --version
+  - curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+  - apt-get install -y nodejs
+  - node --version
+  - npm ci
+
+build:
+  stage: build
+  script:
+    - uv sync
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+
+pages:
+  stage: publish
+  script:
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
