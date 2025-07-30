@@ -29,13 +29,11 @@ jobs:
         with:
           enable-cache: true
           activate-environment: true
-      - run: uv --version
 
       - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
           python-version-file: ".python-version"
-      - run: python --version
 
       - name: Sync uv to get python dependencies
         run: uv sync
@@ -45,17 +43,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: node --version
 
       - name: Install node dependencies
         run: npm ci
 
-      - run: echo $PATH
+      - name: Check install by showing versions
+        run: |
+          echo $PATH
+          python --version
+          uv --version
+          node --version
+          npm --version
+
+      - run: .\.venv\Scripts\Activate.ps1
 
       - name: Execute the data loaders and build the static Observable Framework site
         run: npm run build
-        env:
-          PATH: ${{ env.PATH }}:/path/to/uv/bin # Adjust /path/to/uv/bin as needed
+        #env:
+          #PATH: ${{ env.PATH }}:/path/to/uv/bin # Adjust /path/to/uv/bin as needed
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
