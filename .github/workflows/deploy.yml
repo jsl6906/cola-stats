@@ -1,8 +1,5 @@
 name: Deploy
 
-env:
-  UV_SYSTEM_PYTHON: 1
-
 on:
   # Run this workflow whenever a new commit is pushed to main.
   push: {branches: [main]}
@@ -58,9 +55,11 @@ jobs:
       # - run: .venv\Scripts\Activate.ps1
 
       - name: Execute the data loaders and build the static Observable Framework site
-        run: npm run build
-        #env:
-          #PATH: ${{ env.PATH }}:/path/to/uv/bin # Adjust /path/to/uv/bin as needed
+        run: |
+          echo $PATH
+          npm run build
+        env:
+          PATH: ${{ env.PATH }}:/opt/hostedtoolcache/uv/0.8.4/x86_64 # Adjust /path/to/uv/bin as needed
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
