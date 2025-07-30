@@ -55,9 +55,7 @@ jobs:
       # - run: .venv\Scripts\Activate.ps1
 
       - name: Execute the data loaders and build the static Observable Framework site
-        run: |
-          echo $PATH
-          npm run build
+        run: npm run build
         env:
           PATH: ${{ env.PATH }}:/opt/hostedtoolcache/uv/0.8.4/x86_64 # Adjust /path/to/uv/bin as needed
 
