@@ -1,5 +1,8 @@
 name: Deploy
 
+env:
+  UV_SYSTEM_PYTHON: 1
+
 on:
   # Run this workflow whenever a new commit is pushed to main.
   push: {branches: [main]}
@@ -24,11 +27,13 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.8.3"
+          enable-cache: true
       - run: uv --version
 
-      - name: Set up python
-        run: uv python install
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
       - run: python --version
 
       - name: Sync uv to get python dependencies
@@ -37,7 +42,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: 22
           cache: npm
       - run: node --version
 
