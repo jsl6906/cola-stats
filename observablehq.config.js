@@ -23,7 +23,7 @@ export default {
   root: "src",
 
   interpreters: {
-    ".py": ["uv run"],
+    ".py": ["python"],
     ".sas7bdat": ["sas"]
   },
 
