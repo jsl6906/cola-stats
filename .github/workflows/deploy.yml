@@ -48,13 +48,16 @@ jobs:
           echo $PATH
           python --version
           uv --version
+          echo "Node: "
           node --version
+          echo "NPM: "
           npm --version
-          . .venv/bin/activate
           echo $PATH
 
       - name: Execute the data loaders and build the static Observable Framework site
         run: |
+          echo $PATH
+          . .venv/bin/activate
           echo $PATH
           npm run build
         # env:
