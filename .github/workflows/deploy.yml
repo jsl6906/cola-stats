@@ -25,7 +25,6 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          activate-environment: true
 
       - name: "Set up Python"
         uses: actions/setup-python@v5
@@ -51,11 +50,13 @@ jobs:
           uv --version
           node --version
           npm --version
-
-      # - run: .venv\Scripts\Activate.ps1
+          . .venv/bin/activate
+          echo $PATH
 
       - name: Execute the data loaders and build the static Observable Framework site
-        run: npm run build
+        run: |
+          echo $PATH
+          npm run build
         # env:
         #   PATH: ${{ env.PATH }}:/opt/hostedtoolcache/uv/0.8.4/x86_64 # Adjust /path/to/uv/bin as needed
 
