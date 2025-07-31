@@ -45,6 +45,7 @@ jobs:
 
       - name: Check install by showing versions
         run: |
+          echo "PATH: "
           echo $PATH
           python --version
           uv --version
@@ -52,13 +53,13 @@ jobs:
           node --version
           echo "NPM: "
           npm --version
-          echo $PATH
 
       - name: Execute the data loaders and build the static Observable Framework site
         run: |
           echo $PATH
           . .venv/bin/activate
           echo $PATH
+          uv --version
           npm run build
         # env:
         #   PATH: ${{ env.PATH }}:/opt/hostedtoolcache/uv/0.8.4/x86_64 # Adjust /path/to/uv/bin as needed
