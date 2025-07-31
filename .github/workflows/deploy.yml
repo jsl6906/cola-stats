@@ -1,5 +1,8 @@
 name: Deploy
 
+env:
+  MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
+
 on:
   # Run this workflow whenever a new commit is pushed to main.
   push: {branches: [main]}
@@ -54,15 +57,10 @@ jobs:
           echo "NPM: "
           npm --version
 
-      - name: Execute the data loaders and build the static Observable Framework site
+      - name: Activate venv, execute the data loaders and build the static Observable Framework site
         run: |
-          echo $PATH
           . .venv/bin/activate
-          echo $PATH
-          uv --version
           npm run build
-        # env:
-        #   PATH: ${{ env.PATH }}:/opt/hostedtoolcache/uv/0.8.4/x86_64 # Adjust /path/to/uv/bin as needed
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
