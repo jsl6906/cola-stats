@@ -62,6 +62,26 @@ jobs:
           . .venv/bin/activate
           npm run build
 
+
+      - name: Install node dependencies
+        run: npm ci
+
+      - name: Check install by showing versions
+        run: |
+          echo "PATH: "
+          echo $PATH
+          python --version
+          uv --version
+          echo "Node: "
+          node --version
+          echo "NPM: "
+          npm --version
+
+      - name: Activate venv, execute the data loaders and build the static Observable Framework site
+        run: |
+          . .venv/bin/activate
+          npm run build
+
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
